@@ -5,9 +5,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import lamp.Lamp;
-
-
 public class Server  extends java.rmi.server.UnicastRemoteObject implements ServerInterface {
 
 	public Server() throws RemoteException {
