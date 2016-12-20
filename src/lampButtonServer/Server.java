@@ -1,11 +1,11 @@
 package lampButtonServer;
 
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import lamp.Lamp;
 
 
 public class Server  extends java.rmi.server.UnicastRemoteObject implements ServerInterface {
@@ -18,6 +18,9 @@ public class Server  extends java.rmi.server.UnicastRemoteObject implements Serv
 		try {
 			Registry registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT); 
 			registry.bind("Server", this);
+			Lamp l = new Lamp();
+			registry.bind("Lamp", l);
+			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -26,10 +29,11 @@ public class Server  extends java.rmi.server.UnicastRemoteObject implements Serv
 	@Override
 	public void sendMessage(String message) throws RemoteException {
 		if (message.equals("press")) {
-			LampInterface li;
+			//LampInterface li;
 			try {
-				li = (LampInterface) Naming.lookup("rmi://localhost:1099/Server");
-				li.changeStatus();
+				System.out.println("Switch on lamp here");
+				//li = (LampInterface) Naming.lookup("rmi://localhost:1099/Lamp");
+				//li.changeStatus();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
