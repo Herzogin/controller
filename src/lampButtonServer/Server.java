@@ -1,7 +1,7 @@
 package lampButtonServer;
 
 import buttonLampInterfaces.LampInterface;
-import buttonLampInterfaces.ControllerInterface;
+import buttonLampInterfaces.ServerInterface;
 import lamp.Lamp;
 
 import java.rmi.Naming;
@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Server  extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
+public class Server  extends java.rmi.server.UnicastRemoteObject implements ServerInterface {
 
 	public Server() throws RemoteException {
 		super();
