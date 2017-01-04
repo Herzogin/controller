@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Server  extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
+public class Server extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
 
 	public Server() throws RemoteException {
 		super();
