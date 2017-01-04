@@ -17,7 +17,7 @@ public class Server  extends java.rmi.server.UnicastRemoteObject implements Serv
 
 	public void start() {
 		try {
-			Registry registry = LocateRegistry.createRegistry(1000/*Registry.REGISTRY_PORT*/); 
+			Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/); 
 			registry.bind("Server", this);
 			Lamp l = new Lamp();
 			registry.bind("Lamp", l);
@@ -33,7 +33,7 @@ public class Server  extends java.rmi.server.UnicastRemoteObject implements Serv
 			LampInterface li;
 			try {
 				System.out.println("Switch on lamp here");
-				li = (LampInterface) Naming.lookup("rmi://localhost:1000/Lamp");
+				li = (LampInterface) Naming.lookup("rmi://localhost:3000/Lamp");
 				li.changeStatus();
 			} catch (Exception e) {
 				e.printStackTrace();
