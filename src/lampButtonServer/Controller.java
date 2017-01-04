@@ -21,7 +21,9 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			String[] list = registry.list();
 			
+			Thread.sleep(10000);
 			ButtonInterface bi = (ButtonInterface) registry.lookup("button");
+			bi.register(this);
 			
 			Lamp l = new Lamp();
 			registry.bind("Lamp", l);
