@@ -3,9 +3,7 @@ package lampButtonServer;
 import buttonLampInterfaces.LampInterface;
 import buttonLampInterfaces.ButtonInterface;
 import buttonLampInterfaces.ControllerInterface;
-import lamp.Lamp;
 
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
