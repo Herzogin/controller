@@ -27,20 +27,19 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			String[] list = registry.list();
 			
 			for (String item : list ) {
-				
+
 				if (item.contains("button")) {
 					ButtonInterface bi = (ButtonInterface) registry.lookup(item);
 					bi.register(this);
 					System.out.println("button was registered: " + item);
-					
+
 				} else if (item.contains("lamp")) {
 					li = (LampInterface) registry.lookup(item);
-					
+
 					lampGroup.add(li); // we save every lamp item in one lampgroup, which we will iterate on later
 					System.out.println("lamp was registered: " + item);
 				}
 			}
-			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -50,7 +49,11 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	public void update() throws RemoteException {
 		try {
 			System.out.println("Switch on lamp here");
-			li.changeStatus();
+			for (LampInterface lamp: lampGroup) {
+				lamp.changeStatus();
+				System.out.println("changed status of lamp: " + lamp);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
