@@ -20,9 +20,11 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 
 	public void start() {
 		try {
+			System.out.println("Controller started. Registry gets created...");
 			Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
+			System.out.println("Registry created. Add your buttons and lamps.");
 			
-			Thread.sleep(20000); // pause this program until we started all the button and lamp services
+			Thread.sleep(30000); // pause this program until we started all the button and lamp services
 			
 			String[] list = registry.list();
 			
@@ -36,7 +38,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 				} else if (item.contains("lamp")) {
 					li = (LampInterface) registry.lookup(item);
 
-					lampGroup.add(li); // we save every lamp item in one lampgroup, which we will iterate on later
+					lampGroup.add(li);
 					System.out.println("lamp was registered: " + item);
 				}
 			}
@@ -46,14 +48,27 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	}
 
 	@Override
-	public void update() throws RemoteException {
+	public void update(String version) throws RemoteException {
 		try {
-			System.out.println("Switch on lamp here");
-			for (LampInterface lamp: lampGroup) {
-				lamp.changeStatus();
-				System.out.println("changed status of lamp: " + lamp);
+			for (int i = 0; i < lampGroup.size(); i++) {
+				if (version.equals("even")) {
+					if (i % 2 == 0){
+						lampGroup.get(i).changeStatus();
+						System.out.println("Changed status of lamp: " + lampGroup.get(i));
+					}
+				} else {
+					if (i % 2 != 0) {
+						lampGroup.get(i).changeStatus();
+						System.out.println("Changed status of lamp: " + lampGroup.get(i));
+					}
+				}
 			}
 			
+			//Below turns all lamps on and off
+			/*for (LampInterface lamp: lampGroup) {
+				lamp.changeStatus();
+				System.out.println("Changed status of lamp: " + lamp);
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
