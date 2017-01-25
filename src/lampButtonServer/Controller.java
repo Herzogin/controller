@@ -4,11 +4,17 @@ import buttonLampInterfaces.LampInterface;
 import buttonLampInterfaces.ButtonInterface;
 import buttonLampInterfaces.ControllerInterface;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.htw.fiw.vs.IBinder;
 
 public class Controller extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
 	private LampInterface li = null;
@@ -22,7 +28,11 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	public void start() {
 		try {
 			System.out.println("Controller started. Registry gets created...");
-			Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
+			//Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
+			
+			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.210.50/binder");
+			
+			
 			System.out.println("Registry created. Add your buttons and lamps.");
 			
 			Thread.sleep(40000); // pause this program until we started all the button and lamp services
@@ -76,10 +86,11 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		}
 	}
 	
-	public static void main(String[] args) throws RemoteException {
+	public static void main(String[] args) throws RemoteException, UnknownHostException {
 		Controller s = new Controller();
 		
 		s.start();
+	
 	}
 	
 }
