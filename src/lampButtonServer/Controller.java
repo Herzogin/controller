@@ -13,6 +13,7 @@ import java.util.List;
 public class Controller extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
 	private LampInterface li = null;
 	private List<LampInterface> lampGroup = new ArrayList<LampInterface>();
+	private List<String> buttonGroup = new ArrayList<String>();
 
 	public Controller() throws RemoteException {
 		super();
@@ -24,7 +25,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			System.out.println("Registry created. Add your buttons and lamps.");
 			
-			Thread.sleep(30000); // pause this program until we started all the button and lamp services
+			Thread.sleep(40000); // pause this program until we started all the button and lamp services
 			
 			String[] list = registry.list();
 			
@@ -34,6 +35,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					ButtonInterface bi = (ButtonInterface) registry.lookup(item);
 					bi.register(this);
 					System.out.println("button was registered: " + item);
+					buttonGroup.add(item);
 
 				} else if (item.contains("lamp")) {
 					li = (LampInterface) registry.lookup(item);
@@ -48,10 +50,10 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	}
 
 	@Override
-	public void update(String version) throws RemoteException {
+	public void update(String name) throws RemoteException {
 		try {
 			for (int i = 0; i < lampGroup.size(); i++) {
-				if (version.equals("even")) {
+				if (buttonGroup.indexOf(name) % 2 == 0) {
 					if (i % 2 == 0){
 						lampGroup.get(i).changeStatus();
 						System.out.println("Changed status of lamp: " + lampGroup.get(i));
