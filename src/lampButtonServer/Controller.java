@@ -1,9 +1,5 @@
 package lampButtonServer;
 
-import buttonLampInterfaces.LampInterface;
-import buttonLampInterfaces.ButtonInterface;
-import buttonLampInterfaces.ControllerInterface;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.htw.fiw.vs.IBinder;
+import org.htw.fiw.vs.team1.ButtonInterface;
+import org.htw.fiw.vs.team1.ControllerInterface;
+import org.htw.fiw.vs.team1.LampInterface;
 
 public class Controller extends java.rmi.server.UnicastRemoteObject implements ControllerInterface {
 	private LampInterface li = null;
@@ -30,7 +29,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			System.out.println("Controller started. Registry gets created...");
 			//Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			
-			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.210.50/binder");
+			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.209.97/binder");
 			
 			
 			System.out.println("Registry created. Add your buttons and lamps.");
