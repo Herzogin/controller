@@ -31,10 +31,9 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			
 			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.209.97/binder");
 			
-			
 			System.out.println("Registry created. Add your buttons and lamps.");
 			
-			Thread.sleep(40000); // pause this program until we started all the button and lamp services
+			//Thread.sleep(40000); // pause this program until we started all the button and lamp services
 			
 			String[] list = registry.list();
 			
@@ -61,6 +60,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	@Override
 	public void update(String name) throws RemoteException {
 		try {
+			System.out.println("update called");
 			for (int i = 0; i < lampGroup.size(); i++) {
 				if (buttonGroup.indexOf(name) % 2 == 0) {
 					if (i % 2 == 0){
