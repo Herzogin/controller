@@ -20,20 +20,17 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 
 	public Controller() throws RemoteException {
 		super();
-		t = new Thread(new HelloRunnable(lampGroup));
+		t = new Thread(new BlinkThread(lampGroup));
 	}
 
 	public void start() {
 		try {
 			System.out.println("Controller started. Registry gets created...");
-			//Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			
 			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.149/binder");
 			
 			System.out.println("Registry created. Add your buttons and lamps.");
-			
-			//Thread.sleep(40000); // pause this program until we started all the button and lamp services
-			
+						
 			String[] list = registry.list();
 			
 			for (String item : list ) {
@@ -56,10 +53,10 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		}
 	}
 	
-	class HelloRunnable implements Runnable {
+	class BlinkThread implements Runnable {
 		List<LampInterface> lampGroup;
 		
-		public HelloRunnable(List<LampInterface> lampGroup) {
+		public BlinkThread(List<LampInterface> lampGroup) {
 			this.lampGroup = lampGroup;
 		}
 		
@@ -141,7 +138,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					t.start();
 				}
 				catch (IllegalThreadStateException e) {
-					t = new Thread(new HelloRunnable(lampGroup));
+					t = new Thread(new BlinkThread(lampGroup));
 					t.start();
 				}
 				
