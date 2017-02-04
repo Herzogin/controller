@@ -66,19 +66,23 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		public HelloRunnable(List<LampInterface> lampGroup) {
 			this.lampGroup = lampGroup;
 		}
+		
+		public void turnLampsOff() {
+			for (int i = 0; i < lampGroup.size(); i++) {
+				try {
+					System.out.println("lampen aus");
+					lampGroup.get(i).turnOff();
+				} catch (RemoteException re) {
+					re.printStackTrace();
+				}
+			}
+		}
 
 	    public void run() {
 	    	
 	    	while(true) {
 	    		if (Thread.interrupted()) {
-	    			for (int i = 0; i < lampGroup.size(); i++) {
-	    				try {
-	    					System.out.println("lampen aus");
-							lampGroup.get(i).turnOff();
-						} catch (RemoteException e) {
-							e.printStackTrace();
-						}
-	    			}
+	    			turnLampsOff();
 	    			return;
 	    		}
 	    		
@@ -97,14 +101,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("interupted"+ e);
-					for (int i = 0; i < lampGroup.size(); i++) {
-	    				try {
-	    					System.out.println("lampen aus");
-							lampGroup.get(i).turnOff();
-						} catch (RemoteException re) {
-							re.printStackTrace();
-						}
-	    			}
+	    			turnLampsOff();
 					return;
 				}
 				for (int i = 0; i < lampGroup.size(); i++) {
@@ -132,14 +129,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("interupted"+ e);
-					for (int i = 0; i < lampGroup.size(); i++) {
-	    				try {
-	    					System.out.println("lampen aus");
-							lampGroup.get(i).turnOff();
-						} catch (RemoteException re) {
-							re.printStackTrace();
-						}
-	    			}
+	    			turnLampsOff();
 					return;
 				}
 				for (int i = 0; i < lampGroup.size(); i++) {
