@@ -19,9 +19,12 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	private LampInterface li = null;
 	private List<LampInterface> lampGroup = new ArrayList<LampInterface>();
 	private List<String> buttonGroup = new ArrayList<String>();
+	boolean blink = false;
+	Thread t;
 
 	public Controller() throws RemoteException {
 		super();
+		t = new Thread(new HelloRunnable(lampGroup));
 	}
 
 	public void start() {
@@ -29,7 +32,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			System.out.println("Controller started. Registry gets created...");
 			//Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			
-			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.209.97/binder");
+			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.88/binder");
 			
 			System.out.println("Registry created. Add your buttons and lamps.");
 			
@@ -56,12 +59,83 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			System.out.println(e);
 		}
 	}
+	
+	class HelloRunnable implements Runnable {
+		List<LampInterface> lampGroup;
+		
+		public HelloRunnable(List<LampInterface> lampGroup) {
+			this.lampGroup = lampGroup;
+		}
+
+	    public void run() {
+	    	
+	    	while(true) {
+	    		if (Thread.interrupted()) {return;}
+	    		
+				for (int i = 0; i < lampGroup.size(); i++) {
+					if (i % 2 == 0){
+						try {
+							lampGroup.get(i).changeStatus();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+						System.out.println("an");
+					}
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.out.println("interupted"+ e);
+					return;
+				}
+				for (int i = 0; i < lampGroup.size(); i++) {
+					if (i % 2 == 0){
+						try {
+							lampGroup.get(i).changeStatus();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+						System.out.println("aus");
+					}
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.out.println("interupted"+ e);
+					return;
+				}
+			}
+	    	
+	    }
+	}
 
 	@Override
 	public void update(String name) throws RemoteException {
 		try {
 			System.out.println("update called");
-			for (int i = 0; i < lampGroup.size(); i++) {
+		
+			if (!blink) { 
+				blink = true; 
+				System.out.println("blink is: " + blink);
+				try {
+					t.start();
+				}
+				catch (IllegalThreadStateException e) {
+					t = new Thread(new HelloRunnable(lampGroup));
+					t.start();
+				}
+				
+			}
+			else if (blink) {
+				blink = false;
+				System.out.println("blink is: " + blink);
+				t.interrupt();
+				System.out.println("interrrupt called");
+			}
+			
+			
+			//even and odd lamps 
+			/*for (int i = 0; i < lampGroup.size(); i++) {
 				if (buttonGroup.indexOf(name) % 2 == 0) {
 					if (i % 2 == 0){
 						lampGroup.get(i).changeStatus();
@@ -73,7 +147,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 						System.out.println("Changed status of lamp: " + lampGroup.get(i));
 					}
 				}
-			}
+			}*/
 			
 			//Below turns all lamps on and off
 			/*for (LampInterface lamp: lampGroup) {
