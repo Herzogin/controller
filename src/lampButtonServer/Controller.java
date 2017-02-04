@@ -32,7 +32,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			System.out.println("Controller started. Registry gets created...");
 			//Registry registry = LocateRegistry.createRegistry(3000/*Registry.REGISTRY_PORT*/);
 			
-			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.88/binder");
+			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.149/binder");
 			
 			System.out.println("Registry created. Add your buttons and lamps.");
 			
@@ -70,8 +70,19 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	    public void run() {
 	    	
 	    	while(true) {
-	    		if (Thread.interrupted()) {return;}
+	    		if (Thread.interrupted()) {
+	    			for (int i = 0; i < lampGroup.size(); i++) {
+	    				try {
+	    					System.out.println("lampen aus");
+							lampGroup.get(i).turnOff();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+	    			}
+	    			return;
+	    		}
 	    		
+	    		//EVEN
 				for (int i = 0; i < lampGroup.size(); i++) {
 					if (i % 2 == 0){
 						try {
@@ -86,6 +97,14 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("interupted"+ e);
+					for (int i = 0; i < lampGroup.size(); i++) {
+	    				try {
+	    					System.out.println("lampen aus");
+							lampGroup.get(i).turnOff();
+						} catch (RemoteException re) {
+							re.printStackTrace();
+						}
+	    			}
 					return;
 				}
 				for (int i = 0; i < lampGroup.size(); i++) {
@@ -98,14 +117,42 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 						System.out.println("aus");
 					}
 				}
+				//ODD
+				for (int i = 0; i < lampGroup.size(); i++) {
+					if (i % 2 != 0){
+						try {
+							lampGroup.get(i).changeStatus();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+						System.out.println("an");
+					}
+				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("interupted"+ e);
+					for (int i = 0; i < lampGroup.size(); i++) {
+	    				try {
+	    					System.out.println("lampen aus");
+							lampGroup.get(i).turnOff();
+						} catch (RemoteException re) {
+							re.printStackTrace();
+						}
+	    			}
 					return;
 				}
+				for (int i = 0; i < lampGroup.size(); i++) {
+					if (i % 2 != 0){
+						try {
+							lampGroup.get(i).changeStatus();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+						System.out.println("aus");
+					}
+				}
 			}
-	    	
 	    }
 	}
 
