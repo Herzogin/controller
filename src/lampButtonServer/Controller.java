@@ -27,9 +27,11 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		try {
 			System.out.println("Controller started. Registry gets created...");
 			
-			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.149/binder");
+			IBinder registry = (IBinder) Naming.lookup("rmi://localhost/binder");
 			
 			System.out.println("Registry created. Add your buttons and lamps.");
+			
+			registry.bind("controller", this);
 						
 			String[] list = registry.list();
 			
@@ -181,6 +183,12 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		
 		s.start();
 	
+	}
+
+	@Override
+	public void printFromServer(String s) throws RemoteException {
+		System.out.println("hello from server!" + s);
+		
 	}
 	
 }
