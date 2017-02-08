@@ -132,49 +132,52 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 
 	@Override
 	public void update(String name) throws RemoteException {
+		System.out.println(name);
 		try {
-			System.out.println("update called");
-		
-			if (!blink) { 
-				blink = true; 
-				System.out.println("blink is: " + blink);
-				try {
-					t.start();
-				}
-				catch (IllegalThreadStateException e) {
-					t = new Thread(new BlinkThread(lampGroup));
-					t.start();
-				}
-				
-			}
-			else if (blink) {
-				blink = false;
-				System.out.println("blink is: " + blink);
-				t.interrupt();
-				System.out.println("interrrupt called");
-			}
-			
-			
-			//even and odd lamps 
-			/*for (int i = 0; i < lampGroup.size(); i++) {
-				if (buttonGroup.indexOf(name) % 2 == 0) {
-					if (i % 2 == 0){
-						lampGroup.get(i).changeStatus();
-						System.out.println("Changed status of lamp: " + lampGroup.get(i));
+			if (patternHashMap.get(name).equals("blink")) {
+				if (!blink) { 
+					blink = true; 
+					System.out.println("blink is: " + blink);
+					try {
+						t.start();
 					}
-				} else {
-					if (i % 2 != 0) {
-						lampGroup.get(i).changeStatus();
-						System.out.println("Changed status of lamp: " + lampGroup.get(i));
+					catch (IllegalThreadStateException e) {
+						t = new Thread(new BlinkThread(lampGroup));
+						t.start();
+					}
+					
+				}
+				else if (blink) {
+					blink = false;
+					System.out.println("blink is: " + blink);
+					t.interrupt();
+					System.out.println("interrrupt called");
+				}
+			}
+			else if (patternHashMap.get(name).equals("even-odd")) {
+				for (int i = 0; i < lampGroup.size(); i++) {
+					if (buttonGroup.indexOf(name) % 2 == 0) {
+						if (i % 2 == 0){
+							lampGroup.get(i).changeStatus();
+							System.out.println("Changed status of lamp: " + lampGroup.get(i));
+						}
+					} else {
+						if (i % 2 != 0) {
+							lampGroup.get(i).changeStatus();
+							System.out.println("Changed status of lamp: " + lampGroup.get(i));
+						}
 					}
 				}
-			}*/
-			
-			//Below turns all lamps on and off
-			/*for (LampInterface lamp: lampGroup) {
-				lamp.changeStatus();
-				System.out.println("Changed status of lamp: " + lamp);
-			}*/
+			}
+			else if (patternHashMap.get(name).equals("all-lamps")) {
+				for (LampInterface lamp: lampGroup) {
+					lamp.changeStatus();
+					System.out.println("Changed status of lamp: " + lamp);
+				}
+			}
+			else {
+				System.out.println("No pattern defined. Button does nothing.");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
