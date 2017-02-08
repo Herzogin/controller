@@ -175,6 +175,16 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 					System.out.println("Changed status of lamp: " + lamp);
 				}
 			}
+			else if (patternHashMap.get(name).equals("switch-off")) {
+				for (int i = 0; i < lampGroup.size(); i++) {
+					try {
+						System.out.println("lampen aus");
+						lampGroup.get(i).turnOff();
+					} catch (RemoteException re) {
+						re.printStackTrace();
+					}
+				}
+			}
 			else {
 				System.out.println("No pattern defined. Button does nothing.");
 			}
