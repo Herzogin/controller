@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.htw.fiw.vs.IBinder;
@@ -17,6 +18,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	private List<String> buttonGroup = new ArrayList<String>();
 	boolean blink = false;
 	Thread t;
+	private HashMap<String, String> patternHashMap = new HashMap<String, String>();
 
 	public Controller() throws RemoteException {
 		super();
@@ -186,9 +188,9 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	}
 
 	@Override
-	public void printFromServer(String s) throws RemoteException {
-		System.out.println("hello from server!" + s);
-		
+	public void changePattern(String buttonName, String pattern) throws RemoteException {
+		patternHashMap.put(buttonName, pattern);
+		System.out.println(patternHashMap);
 	}
 	
 }
