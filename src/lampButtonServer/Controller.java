@@ -178,6 +178,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			else if (patternHashMap.get(name).equals("switch-off")) {
 				for (int i = 0; i < lampGroup.size(); i++) {
 					try {
+						t.interrupt();
 						System.out.println("lampen aus");
 						lampGroup.get(i).turnOff();
 					} catch (RemoteException re) {
