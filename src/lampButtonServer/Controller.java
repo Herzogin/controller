@@ -17,12 +17,15 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 	private List<LampInterface> lampGroup = new ArrayList<LampInterface>();
 	private List<String> buttonGroup = new ArrayList<String>();
 	boolean blink = false;
+	boolean sequence = false;
 	Thread t;
+	Thread t2;
 	private HashMap<String, String> patternHashMap = new HashMap<String, String>();
 
 	public Controller() throws RemoteException {
 		super();
 		t = new Thread(new BlinkThread(lampGroup));
+		t2 = new Thread(new SequenceThread(lampGroup));
 		patternHashMap.put("default", "default");
 	}
 
@@ -30,7 +33,7 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 		try {
 			System.out.println("Controller started. Registry gets created...");
 			
-			IBinder registry = (IBinder) Naming.lookup("rmi://141.45.251.207/binder");
+			IBinder registry = (IBinder) Naming.lookup("rmi://localhost/binder");
 						
 			registry.bind("controller", this);
 						
@@ -128,6 +131,55 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 			}
 	    }
 	}
+	
+	class SequenceThread implements Runnable {
+		List<LampInterface> lampGroup;
+		
+		public SequenceThread(List<LampInterface> lampGroup) {
+			this.lampGroup = lampGroup;
+		}
+		
+		public void turnLampsOff() {
+			for (int i = 0; i < lampGroup.size(); i++) {
+				try {
+					System.out.println("lampen aus");
+					lampGroup.get(i).turnOff();
+				} catch (RemoteException re) {
+					re.printStackTrace();
+				}
+			}
+		}
+		
+		public void changeLampStatus(int i) {
+			try {
+				lampGroup.get(i).changeStatus();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+
+	    public void run() {
+	    	while(true) {
+	    		if (Thread.interrupted()) {
+	    			turnLampsOff();
+	    			return;
+	    		}
+	    		
+	    		for (int i = 0; i < lampGroup.size(); i++) {
+					try {
+						lampGroup.get(i).changeStatus();
+						Thread.sleep(1000);
+						lampGroup.get(i).changeStatus();
+					} catch (RemoteException re) {
+						re.printStackTrace();
+					} catch (InterruptedException e) {
+						turnLampsOff();
+		    			return;
+					}
+				}
+	    	}
+	    }
+	}
 
 	@Override
 	public void update(String name) throws RemoteException {
@@ -186,12 +238,30 @@ public class Controller extends java.rmi.server.UnicastRemoteObject implements C
 						}
 					}
 				}
+				else if (patternHashMap.get(name).equals("sequence")) {
+					if (!sequence) { 
+						sequence = true; 
+						try {
+							t2.start();
+						}
+						catch (IllegalThreadStateException e) {
+							t2 = new Thread(new SequenceThread(lampGroup));
+							t2.start();
+						}
+					}
+					else {
+						sequence = false;
+						t2.interrupt();
+						System.out.println("interrrupt called");
+					}
+					
+				}
 				else {
 					System.out.println("No pattern defined. Button does nothing.");
 				}
 			}
 			else {
-				System.out.println("Key didn't exsist.");
+				System.out.println("Key didn't exist.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
